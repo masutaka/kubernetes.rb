@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: redash-create-db
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        name: redash-create-db
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: server
+        image: redash/redash:latest
+        command: ["create_db"]
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "0"
+        - name: REDASH_LOG_LEVEL
+          value: INFO
+        - name: REDASH_REDIS_URL
+          value: "redis://redis-service.default.svc.cluster.local:6379/0"
+        - name: REDASH_DATABASE_URL
+          value: "postgresql://redash:1234567890@db-service.default.svc.cluster.local:5432/postgres"
+        - name: REDASH_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: redash-secret
+              key: REDASH_COOKIE_SECRET
+        - name: REDASH_WEB_WORKERS
+          value: "4"
