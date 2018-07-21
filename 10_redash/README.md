@@ -1,5 +1,7 @@
 # Redash
 
+https://redash.io/help/open-source/setup#docker-compose
+
 ## Minikube
 
 1. VM上にk8sクラスターを作成
